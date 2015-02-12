@@ -1,35 +1,38 @@
-var coinCombo = function(input) {
+var romanNumeral = function(input) {
+  var number = input;
+  var thousand, five_hundred, one_hundred, fifty, ten, five, one;
+  var roman_numeral_arrays = [[thousand, 1000, 'M'], [five_hundred, 500, 'D'], [one_hundred, 100, 'C'], [fifty, 50, 'L'], [ten, 10, 'X'], [five, 5, 'V'], [one, 1, 'I']];
+  var replacement_array = [['DCCCC','CM'], ['CCCC', 'CD'], ['LXXXX', 'XC'], ['XXXX', 'XL'], ['VIIII', 'IX'], ['IIII', 'IV']];
+  var used_roman_numeral_array = [];
+  var final_roman_numeral = ""
 
-  var change_total = input;
-  var quarter, dime, nickel, penny;
-  var change_combos = [ [quarter, 25, 'quarter'], [dime, 10, 'dime'] , [nickel, 5, 'nickel'], [penny, 1, 'penny'] ]
+  if (number>= 4000) {
+    return "This number can not be a roman numeral."
+  }
 
-  change_combos.forEach(function(change_combo) {
-    (change_combo[0]) = Math.floor(change_total/(change_combo[1]));
-    change_total -= ((change_combo[0])*(change_combo[1]));
-  });
+  else {
+    roman_numeral_arrays.forEach(function(roman_numeral_array) {
+      roman_numeral_array[0]= Math.floor(number/roman_numeral_array[1])
+      number -= (roman_numeral_array[0]*roman_numeral_array[1]);
+      for(var i = roman_numeral_array[0]; i > 0; i--) {
+        used_roman_numeral_array.push(roman_numeral_array[2]);
+      }
+    });
+    var roman_numeral = used_roman_numeral_array.join('');
 
-  // quarter = Math.floor(change_total/25);
-  // change_total -= (quarter * 25);
-  // dime = Math.floor(change_total/10);
-  // change_total -= (dime * 10);
-  // nickel = Math.floor(change_total/5);
-  // change_total -= (nickel*5);
-  // penny = change_total;
-  // change_total -= penny;
-
-  return change_combos;
+    replacement_array.forEach(function(replacement){
+      roman_numeral = roman_numeral.replace((replacement[0]), (replacement[1]));
+    });
+    return roman_numeral;
+  }
 };
 
 $(document).ready(function(event) {
-  $('form#change-total').submit(function(event) {
-    var input =[parseInt($('input#change').val())];
-    var change_results = coinCombo(input);
+  $('form#number').submit(function(event) {
+    var input =[parseInt($('input#number_input').val())];
+    var final_roman_numeral = romanNumeral(input);
 
-    change_results.forEach(function(result) {
-      var coin_total = result[0];
-      $('.' + (result[2])).text(coin_total);
-    });
+      $('.output').text(final_roman_numeral);
 
      $('#result').show();
      event.preventDefault();
